@@ -1,29 +1,40 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import {Button, ButtonToolbar, Container} from 'react-bootstrap';
+
 const timerInterval = 1000; // milli seconds
 
-export class SignalGenerator extends React.Component {
+interface SignalGeneratorState {
+  isIntervalRunning: boolean,
+};
+
+export class SignalGenerator extends React.Component<{}, SignalGeneratorState> {
   intervalId: number | null = null;
-  intervalCount: number = 0;
+
+  public state: SignalGeneratorState = {
+    isIntervalRunning: false
+  };
 
   componentDidMount() {
     console.log("SignalGenerator did mount.");
-    this.initInterval();
   }
 
-  initInterval() {
+  startInterval() {
     console.log(this.intervalId);
     if (this.intervalId !== null) return;
 
     this.intervalId = window.setInterval(() => {
       this.generateSignal()
-      this.intervalCount += 1;
-      if (this.intervalCount >= 3) {
-        window.clearInterval(this.intervalId);
-        this.intervalId = null;
-      }
     }, timerInterval);
+    this.setState({ isIntervalRunning: true });
+  }
+
+  stopInterval() {
+    if (this.intervalId === null) return;
+    window.clearInterval(this.intervalId);
+    this.intervalId = null;
+    this.setState({ isIntervalRunning: false });
   }
 
   generateSignal() {
@@ -54,7 +65,24 @@ export class SignalGenerator extends React.Component {
   }
 
   render() {
-    return <div></div>;
+    const { isIntervalRunning } = this.state;
+    const clickCallback = () => {
+      if (isIntervalRunning) {
+        this.stopInterval();
+      } else {
+        this.startInterval();
+      }
+    };
+
+    return (<div>
+      <ButtonToolbar>
+        <Button id="start-stop-button"
+                variant={ isIntervalRunning ? "danger" : "success" }
+                onClick={ clickCallback }>
+          { isIntervalRunning ? 'Stop' : 'Start' } signal
+        </Button>
+      </ButtonToolbar>
+    </div>);
   }
 }
 

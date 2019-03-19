@@ -1,3 +1,9 @@
+@import 'bootstrap/dist/css/bootstrap.css';
+
 body {
   background: #222;
+}
+
+.btn-toolbar > *+* {
+  margin-left: .5em;
 }
