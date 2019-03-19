@@ -1,0 +1,8 @@
+#! /usr/bin/env ruby
+APP_ROOT = File.expand_path('..', __dir__)
+Dir.chdir(APP_ROOT) do
+  exec "docker", "run", "--rm", "-p", "24224:24224",
+       "-v", "#{APP_ROOT}/log/fluentd:/fluentd/log",
+       "-v", "#{APP_ROOT}/config/fluentd:/fluentd/etc",
+       "fluent/fluentd:latest", *ARGV
+end
