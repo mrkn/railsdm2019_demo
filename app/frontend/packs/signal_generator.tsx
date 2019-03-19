@@ -3,7 +3,10 @@ import * as ReactDOM from 'react-dom';
 
 import {Button, ButtonToolbar, Container} from 'react-bootstrap';
 
-const timerInterval = 1000; // milli seconds
+import { Gaussian } from 'ts-gaussian';
+
+const timerInterval = 100; // milli seconds
+const ndist = new Gaussian(0, 0.03);
 
 interface SignalGeneratorState {
   isIntervalRunning: boolean,
@@ -38,6 +41,9 @@ export class SignalGenerator extends React.Component<{}, SignalGeneratorState> {
   }
 
   generateSignal() {
+    const x = 20*Math.random() - 10;    // A random number in [-10, 10)
+    const d = ndist.ppf(Math.random()); // gaussian noise
+    const y = Math.sin(x) + d;          // The output
     window.fetch('./signals', {
       method: 'POST',
       headers: {
@@ -46,7 +52,7 @@ export class SignalGenerator extends React.Component<{}, SignalGeneratorState> {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
-      body: '"ahi"'
+      body: JSON.stringify({x: x, y: y})
     }).then((response) => {
       return response.json();
     }).then((body) => {
