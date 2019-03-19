@@ -6794,6 +6794,11 @@ trim-right@^1.0.1:
   dependencies:
     glob "^7.1.2"
 
+ts-gaussian@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/ts-gaussian/-/ts-gaussian-1.2.0.tgz#7d5d57b2e2337fe72268cd66d658190c985dbad9"
+  integrity sha512-rAXlF7jDbdzx+kKe2sSUeKNzeGOaohQCtprmepiEHm3NQkykB5epHjjdyubaDYQqogHBMXDIBT9QsvYE8+xdQw==
+
 ts-loader@^5.3.3:
   version "5.3.3"
   resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-5.3.3.tgz#8b4af042e773132d86b3c99ef0acf3b4d325f473"
