@@ -24,7 +24,6 @@ export class SignalGenerator extends React.Component<{}, SignalGeneratorState> {
   }
 
   startInterval() {
-    console.log(this.intervalId);
     if (this.intervalId !== null) return;
 
     this.intervalId = window.setInterval(() => {
