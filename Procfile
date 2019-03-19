@@ -1,3 +1,3 @@
 rails: bin/rails s --port=3000
 webpack: bin/webpack-dev-server
-fluentd: bin/fluentd
+learner: bin/rake model_learner:docker:run
