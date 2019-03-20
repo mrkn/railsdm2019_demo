@@ -70,7 +70,8 @@ ENV HOME=/home/ubuntu
 WORKDIR $HOME
 
 ADD fluent.conf fluent/
+ADD plugin/* fluent/plugin/
 
 EXPOSE 24224 5140
 ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["fluentd", "-c", "fluent/fluent.conf", "-vv"]
+CMD ["fluentd", "-c", "fluent/fluent.conf", "-p", "fluent/plugin"]

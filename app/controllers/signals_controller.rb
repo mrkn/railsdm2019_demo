@@ -10,6 +10,7 @@ class SignalsController < ApplicationController
   private
 
   def send_signal(x, y)
-    RestClient.post FLUENTD_URL, {x: x, y: y}
+    data = {x: x, y: y}.to_json
+    RestClient.post FLUENTD_URL, data, {content_type: :json, accept: :json}
   end
 end
