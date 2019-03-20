@@ -36,18 +36,6 @@ def load_or_init_model(model_filename):
     else:
         return init_model()
 
-def partial_fit(model, X, y):
-    n_1 = len(model.steps) - 1
-    for i, step in enumerate(model.steps):
-        name, est = step
-        if hasattr(est, 'partial_fit'):
-            est.partial_fit(X, y)
-        else:
-            est.fit(X, y)
-        if i < n_1:
-            X = est.transform(X)
-    return model
-
 def update_model(model_filename, data):
     model = load_or_init_model(model_filename)
 
@@ -56,5 +44,8 @@ def update_model(model_filename, data):
     X = data['x'].to_numpy().reshape(-1, 1)
     y = data['y'].to_numpy()
 
-    model = partial_fit(model, X, y)
+    model.fit(X, y,
+        regressor__coef_init=model['regressor'].coef_,
+        regressor__intercept_init=model['regressor'].intercept_,
+    )
     save_model(model_filename, model)
