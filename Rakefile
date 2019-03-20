@@ -20,6 +20,7 @@ namespace :model_learner do
     task :run do
       sh "docker", "run", "--rm", "-p", "24224:24224",
          "-v", "#{Rails.root.join("log/fluentd")}:/home/ubuntu/fluentd/log",
+         "-v", "#{Rails.root.join("tmp")}:/home/ubuntu/tmp",
          DOCKER_IMAGE_NAME
     end
   end

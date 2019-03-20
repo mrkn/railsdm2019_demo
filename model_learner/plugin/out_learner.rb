@@ -2,6 +2,18 @@ require 'fluent/plugin/output'
 require 'fluent/config/error'
 
 require 'arrow'
+require 'arrow-pycall'
+require 'pycall'
+
+module ModelLearner
+  python_dir = File.expand_path('../python', __FILE__)
+  PyCall.sys.path.append(python_dir)
+  @pymodule = PyCall.import_module('model_learner')
+
+  def self.update_model(model_filename, data)
+    @pymodule.update_model(model_filename, data)
+  end
+end
 
 module Fluent
   module Plugin
@@ -10,9 +22,12 @@ module Fluent
 
       helpers :formatter
 
+      DEFAULT_MODEL_FILENAME = File.expand_path("~/model.pickle")
       DEFAULT_LINE_FORMAT_TYPE = 'json'
       DEFAULT_FORMAT_TYPE = 'json'
       FIELD_NAMES = %w[x y]
+
+      config_param :model_filename, :string, default: DEFAULT_MODEL_FILENAME
 
       config_section :format do
         config_set_default :@type, 'csv'
@@ -43,10 +58,14 @@ module Fluent
         end
       end
 
-      def try_write(chunk)
+      def write(chunk)
         data = "#{FIELD_NAMES.join(",")}\n#{chunk.read}"
         table = Arrow::CSVLoader.load(data, column_types: {x: :double, y: :double})
-        $log.puts(table.inspect)
+        learn(table)
+      end
+
+      def learn(table)
+        ModelLearner.update_model(@model_filename, table.to_python)
       end
     end
   end

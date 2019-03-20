@@ -65,12 +65,12 @@ RUN git clone -b extpp_and_arrow_0_12 \
     rake install
 
 USER ubuntu
-ENV HOME=/home/ubuntu
+ENV HOME=/home/ubuntu PYTHON=python3
 
 WORKDIR $HOME
 
 ADD fluent.conf fluent/
-ADD plugin/* fluent/plugin/
+ADD plugin fluent/plugin/
 
 EXPOSE 24224 5140
 ENTRYPOINT ["/sbin/tini", "--"]
