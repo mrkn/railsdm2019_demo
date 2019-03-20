@@ -20,10 +20,11 @@ def save_model(model_filename, model):
 def init_model():
     from sklearn.pipeline import Pipeline
     from sklearn.linear_model import SGDRegressor
-    from sklearn.preprocessing import StandardScaler
+    from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 
     estimators = [
         ('scaler', StandardScaler()),
+        ('poly', PolynomialFeatures(5)),
         ('regressor', SGDRegressor(loss='huber', penalty='elasticnet', warm_start=True)),
     ]
     model = Pipeline(estimators)
@@ -39,7 +40,10 @@ def partial_fit(model, X, y):
     n_1 = len(model.steps) - 1
     for i, step in enumerate(model.steps):
         name, est = step
-        est.partial_fit(X, y)
+        if hasattr(est, 'partial_fit'):
+            est.partial_fit(X, y)
+        else:
+            est.fit(X, y)
         if i < n_1:
             X = est.transform(X)
     return model
