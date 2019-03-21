@@ -23,9 +23,8 @@ def init_model():
     from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 
     estimators = [
-        ('scaler', StandardScaler()),
-        ('poly', PolynomialFeatures(5)),
-        ('regressor', SGDRegressor(loss='huber', penalty='elasticnet', warm_start=True)),
+        ('poly', PolynomialFeatures(6)),
+        ('regressor', SGDRegressor(alpha=0.01, penalty='elasticnet', warm_start=True)),
     ]
     model = Pipeline(estimators)
     return model
@@ -42,10 +41,11 @@ def update_model(model_filename, data):
     if not isinstance(data, pd.DataFrame):
         data = data.to_pandas()
     X = data['x'].to_numpy().reshape(-1, 1)
-    y = data['y'].to_numpy()
+    y = data['y'].to_numpy().reshape(-1, 1)
 
-    model.fit(X, y,
-        regressor__coef_init=model['regressor'].coef_,
-        regressor__intercept_init=model['regressor'].intercept_,
-    )
+    X_ = model.named_steps['poly'].fit_transform(X)
+    model.named_steps['regressor'].partial_fit(X_, y)
+
     save_model(model_filename, model)
+
+    return model.score(X, y)

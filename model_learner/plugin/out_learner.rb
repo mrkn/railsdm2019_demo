@@ -61,7 +61,8 @@ module Fluent
       def write(chunk)
         data = "#{FIELD_NAMES.join(",")}\n#{chunk.read}"
         table = Arrow::CSVLoader.load(data, column_types: {x: :double, y: :double})
-        learn(table)
+        score = learn(table)
+        $log.info("score = #{score}")
       end
 
       def learn(table)
